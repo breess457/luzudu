@@ -1,29 +1,28 @@
 "use client";
-import React,{FormEvent, useState} from "react";
+import React,{FormEvent, useEffect, useState} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import MultipleImage from "@/components/multipleImg";
 import { useAuth } from "@/untils/AuthProvider";
+import { getImageMarket } from "@/untils/SessionProviders";
+
 export default function EditImageMarket({...prop}){
-    const {getcookie,getmymarket,getImageMarket} = useAuth()
-    //let numImgdefult:number = getImageMarket.picMarket.length
+    const {getcookie,getMarketsImage} = useAuth()
     const [picMarket, setPicMarket] = useState<File[]>([]);
-    const [fileMarket, setFileMarket] = useState<[]>(getImageMarket.picMarket ?? [])
+    const [fileMarket, setFileMarket] = useState<[]>(getMarketsImage.picMarket)
     const [getImageNameMarket, setGetImageNameMarket] = useState<[]>([])
-    console.log({getImageNameMarket})
+    const [alert, setAlert] = useState<boolean>(false)
+
     const onUploadImageMarket = async (e:FormEvent)=>{
         e.preventDefault()
+        const formData = new FormData();
+        for(let i = 0; i < picMarket.length; i++){
+            formData.append('marketimages',picMarket[i])
+        }
+        for(let x=0; x < getImageNameMarket.length;x++){
+            formData.append('datawilltrash[]',getImageNameMarket[x])
+        }
         
-            const formData = new FormData();
-            for(let i = 0; i < picMarket.length; i++){
-                formData.append('marketimages',picMarket[i])
-            }
-            for(let x=0; x < getImageNameMarket.length;x++){
-                formData.append('datawilltrash',getImageNameMarket[x])
-            }
-            for (const [key, value] of formData.entries()) {
-                console.log(`x :${key}:`, value);
-            }
         try{
             const response = await fetch('http://localhost:3001/markets/uploadimagemarket',{
                 method:"POST",
@@ -35,14 +34,28 @@ export default function EditImageMarket({...prop}){
                 body:formData
             })
             if(!response.ok) throw new Error(`Fetch Error Status:${response.status}`)
-            console.log("status : ",response.status)
             const resultdata = await response.json()
-            console.log(resultdata)
+            if(resultdata.statusCode === 201){
+                const newData = await getImageMarket()
+                prop.setDataImageMarket(newData)
+                prop.toast.success(`อัพโหลดรูปเรียบร้อย`)
+                prop.setModelUploadImage(false)
+            } else if(resultdata.statusCode === 300){
+                setAlert(true)
+            }
         }catch(e){
             console.log(`Is Error : ${e}`)
         }
 
     }
+    useEffect(()=>{
+        (async()=>{
+            const lastdata = await getImageMarket()
+            setFileMarket(lastdata.picMarket)
+        })()
+    },[])
+
+    
     return(
         <div 
         tabIndex={-1}
@@ -61,13 +74,28 @@ export default function EditImageMarket({...prop}){
                             <FontAwesomeIcon icon={faXmark} className="h-5 w-5 text-dark-500"/>
                         </button>
                     </div>
+                    {alert ? (
+                    <div className="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50">
+                        <div className="ms-3 text-sm font-medium text-center">
+                                โปรดอัพโหลดรูปภาพ
+                        </div>
+                        <button 
+                            type="button"
+                            className="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8"
+                            onClick={()=>setAlert(false)}
+                        >
+                            <FontAwesomeIcon icon={faXmark} className="h-5 w-5 text-dark-500"/>
+                        </button>
+                    </div>
+                    ):null}
+
                     <div className="w-full">
                          <MultipleImage
                             count={5 - fileMarket.length}
                             formats={["jpg", "jpeg", "png"]}
                             setPicMarket={setPicMarket}
                             picMarket={picMarket}
-                            getPicMarket={getImageMarket.picMarket}
+                            getPicMarket={getMarketsImage.picMarket}
                             fileMarket={fileMarket} 
                             setFileMarket={setFileMarket}
                             getImageNameMarket={getImageNameMarket} 

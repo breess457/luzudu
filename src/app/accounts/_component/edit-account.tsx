@@ -6,6 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import Select from "react-select"
 import { useAuth } from "@/untils/AuthProvider";
 import { OrtherFunction } from "@/common/orther.fn";
+import { getProfile } from "@/untils/SessionProviders";
 
 
 export function loopDay(){
@@ -46,15 +47,15 @@ export default function EditAccount({...prop}){
     const {getcookie,getprofile} = useAuth()
     const [image, setImage]:any = useState<File | null>(null)
     const [forms, setForms]:any = useState({
-        firstname:getprofile.Profile?.firstname ?? '',
-        lastname:getprofile.Profile?.lastname ?? '',
+        firstname:prop.dataProfile.Profile?.firstname ?? '',
+        lastname:prop.dataProfile.Profile?.lastname ?? '',
     })
-    const [day,setDay]:any = useState(getprofile.Account?.day ?? null)
-    const [month, setMonth]:any = useState(getprofile.Account?.month ?? null)
-    const [year, setYear]:any = useState(getprofile.Account?.year ?? "")
-    const [gender, setGender]:any = useState(getprofile.Account?.gender ?? null)
+    const [day,setDay]:any = useState(prop.dataProfile.Account?.day ?? "")
+    const [month, setMonth]:any = useState(prop.dataProfile.Account?.month ?? "")
+    const [year, setYear]:any = useState(prop.dataProfile.Account?.year ?? "")
+    const [gender, setGender]:any = useState(prop.dataProfile.Account?.gender ?? "")
     const [loading,setLoading] = useState(false)
-    const [test,setTest] = useState(getprofile)
+
     const [error,setError] = useState({
         firstname:false,
         lastname:false
@@ -70,6 +71,10 @@ export default function EditAccount({...prop}){
         e.preventDefault()
         setLoading(true)
         try{
+            setError({
+                firstname:!forms.firstname,
+                lastname:!forms.lastname
+            })
             let formData = new FormData();
             formData.append('file',image)
             formData.append('firstname',forms.firstname)
@@ -79,9 +84,6 @@ export default function EditAccount({...prop}){
             formData.append('month',month)
             formData.append('year',year)
 
-            for (const [key, value] of formData.entries()) {
-                console.log(`x :${key}:`, value);
-            }
             const response = await fetch('http://localhost:3001/users/manage-account',{
                 method:"POST",
                 body:formData,
@@ -95,6 +97,8 @@ export default function EditAccount({...prop}){
             const responseJson = await response.json()
             if(responseJson.statusCode === 201){
                 prop.setModelEditAccount(false)
+                let newData = await getProfile()
+                prop.setDataProfile(newData.data)
             }else{
                 ortherFunction.showToastMessage("error","Failed Is Not Update Account")
             }
@@ -126,7 +130,7 @@ export default function EditAccount({...prop}){
                         </div>
                         <form className="flex flex-row w-full gap-2" noValidate onSubmit={handleEditAccount}>
                             <div className="w-1/4 items-center flex">
-                                <PreviewImage setImageState={setImage} isImage={image} setHight={'180px'} imageProfile={getprofile.Photo}/>
+                                <PreviewImage setImageState={setImage} isImage={image} setHight={'180px'} imageProfile={prop.dataProfile.Photo}/>
                             </div>
                             <div className="w-3/4">
                                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -201,7 +205,8 @@ export default function EditAccount({...prop}){
                                             classNamePrefix="select"
                                             id="gender"
                                             onChange={(e)=>{
-                                                setGender(e?.value)
+                                                setGender(e?.value ?? "")
+                                                console.log(e?.value ?? "")
                                             }}
                                             name="gender"
                                             isClearable

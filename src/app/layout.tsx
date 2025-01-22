@@ -31,10 +31,16 @@ export default async function RootLayout({
   const cookieStore = await cookies()
   const getcookie = cookieStore.get('Authentication')
   const getDataProfile = await getProfile()
-  const getDateMyMarket = await getMyMarket()
+  const getDataMyMarket = await getMyMarket()
   const getMarketsImage = await getImageMarket()
   return (
-    <AuthProvider value={{getcookie:getcookie?.value,getprofile:getDataProfile?.data,getmymarket:getDateMyMarket,getImageMarket:getMarketsImage}}>
+    <AuthProvider value={{
+        getcookie:getcookie?.value,
+        getprofile:getDataProfile?.data,
+        getmymarket:getDataMyMarket,
+        getMarketsImage:getMarketsImage
+      }
+    }>
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}

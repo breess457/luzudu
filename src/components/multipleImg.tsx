@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import Swal from "sweetalert2";
+import { ToastContainer,toast } from "react-toastify";
 
 export const RenderUPloadImage = ({...prop})=>{
   function deleteFile(indexImg:any) {
@@ -128,7 +129,8 @@ export const RenderImageDefault = ({...props})=>{
 }
 
 export default function MultipleImage({
-    count,formats,setPicMarket,picMarket,getPicMarket,fileMarket,setFileMarket,getImageNameMarket,setGetImageNameMarket
+    count,formats,setPicMarket,picMarket,getPicMarket,fileMarket,
+    setFileMarket,getImageNameMarket,setGetImageNameMarket,dataImageMarket
 }:any){
         const [ownerLicense, setOwnerLicense] = useState<File[]>([]);
         function uploadFiles(f:any) {
@@ -154,29 +156,15 @@ export default function MultipleImage({
             return formats.some((format:any) => file.type.endsWith(`/${format}`));
         });
         if (ownerLicense.length >= count) {
-          showAlert(
-            "warning",
-            "Maximum Files",
-            `Only ${count} files can be uploaded`
-          );
+          toast.warning(`อัพโหลดรูปสูงสุดแค่ 5 รูปเท่านั้น`)
           return;
         }
         if (!allFilesValid) {
-            showAlert(
-              "warning",
-              "Invalid Media",
-              `Invalid file format. Please only upload ${formats
-                .join(", ")
-                .toUpperCase()}`
-            );
+            toast.warning(`รูปแบบไฟล์ไม่ถูกต้อง กรุณาอัพโหลดเฉพาะ ${formats.join(", ").toUpperCase()} เท่านั้น`)
             return;
         }
         if (count && count < files.length) {
-            showAlert(
-              "error",
-              "Error",
-              `Only ${count} file${count !== 1 ? "s" : ""} can be uploaded at a time`
-            );
+            toast.error(`Only ${count} file${count !== 1 ? "s" : ""} can be uploaded at a time`)
             return;
         }
         if (files && files.length) {
@@ -192,10 +180,7 @@ export default function MultipleImage({
       
             Promise.all(nFiles).then((newFiles) => {
               uploadFiles(newFiles);
-              TopNotification.fire({
-                icon: "success",
-                title: "Image(s) uploaded"
-              });
+              console.log("upload suucess")
             });
         }
     }
@@ -235,27 +220,6 @@ export default function MultipleImage({
         };
     },[ownerLicense])
 
-    const TopNotification = Swal.mixin({
-        toast: true,
-        position: "bottom-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        }
-    });
-    function showAlert(icon:any, title:string, text:string) {
-        Swal.fire({
-          icon: icon,
-          title: title,
-          text: text,
-          showConfirmButton: false,
-          width: 500,
-          timer: 1500
-        });
-    }
     function showImage(image:any) {
       Swal.fire({
         imageUrl: image,
@@ -267,7 +231,8 @@ export default function MultipleImage({
 
     return (
         <>
-          <div
+        <ToastContainer position="top-center" />
+        <div
           className={`${
             dragging
               ? "border border-[#2B92EC] bg-[#EDF2FF]"

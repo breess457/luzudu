@@ -194,7 +194,7 @@ const FormRegister = ({setCloseModel}:any)=>{
     }
     return (
         <form noValidate onSubmit={handleFormSignup} className="space-y-4 mx-4">
-            {close ? <Alert text={"user have"} setClose={setClose} /> : null}
+            {close ? <Alert text={"ไม่สามารถใช้ username นี้โปรดใช้ username อื่น"} setClose={setClose} /> : null}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <input 
                     type="text" 

@@ -4,7 +4,7 @@ interface AuthContextType {
     getcookie?: string;
     getprofile:any;
     getmymarket:any;
-    getImageMarket:any
+    getMarketsImage:any;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)

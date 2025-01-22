@@ -16,7 +16,7 @@ export default async function RootAccountLayout({ children }:Readonly<{children:
     return (
         <div className="w-full flex bg-white">
             <Sidebar user={getDataProfile?.data}/>
-            <div className="w-full">
+            <div className="w-full ml-2">
                 {children}
             </div>
         </div>

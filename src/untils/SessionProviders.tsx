@@ -50,18 +50,22 @@ const getMyMarket = async ()=>{
     const cookieStore = await cookies()
     const getCookie = cookieStore.get('Authentication')
     if(getCookie?.value){
-        const fetchData = await fetch('http://localhost:3001/markets/',{
-            method:"GET",
-            headers:{
-              Authorization: `Bearer ${getCookie?.value}`
-            },
-            credentials: 'include'
-        })
-        if(!fetchData.ok) throw new Error(`Is Error(${fetchData.status})`)
-        const responseData = await fetchData.json()
-        return responseData;
+        try{
+            const fetchData = await fetch('http://localhost:3001/markets/',{
+                method:"GET",
+                headers:{
+                  Authorization: `Bearer ${getCookie?.value}`
+                },
+                credentials: 'include'
+            })
+            if(!fetchData.ok) throw new Error(`Is Error(${fetchData.status})`)
+            const responseData = await fetchData.json()
+            return responseData;
+        }catch(e){
+            console.log(e)
+            return null
+        }
     }
-    return null
 
 }
 

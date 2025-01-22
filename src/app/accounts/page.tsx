@@ -10,24 +10,24 @@ import { OrtherFunction } from "@/common/orther.fn";
 
 export default function Account(){
     const ortherFunction = new OrtherFunction
-    const {getcookie, getprofile,getImageMarket} = useAuth()
+    const {getprofile,getMarketsImage} = useAuth()
     const [modelEditAccount, setModelEditAccount] = useState(false)
-    console.log("getcookie : ",getcookie)
+
+    const [dataProfile, setDataProfile] = useState(getprofile)
 
     const [currentIndex, setCurrentIndex] = useState(0)
         const slideInterval = 3000
-        const nextSlide = ()=>setCurrentIndex((prevIndex)=>(prevIndex + 1) % getImageMarket.picMarket.length)
-        const prevSlide = ()=>{
-            setCurrentIndex((prevIndex)=>prevIndex === 0 ? getImageMarket.picMarket.length - 1 : prevIndex -1)
-        }
+        const nextSlide = ()=>setCurrentIndex((prevIndex)=>(prevIndex + 1) % getMarketsImage.picMarket.length)
+        // const prevSlide = ()=>{
+        //     setCurrentIndex((prevIndex)=>prevIndex === 0 ? getMarketsImage.picMarket.length - 1 : prevIndex -1)
+        // }
     
         useEffect(()=>{
-            if(getImageMarket && getImageMarket.picMarket.length > 0){
+            if(getMarketsImage && getMarketsImage.picMarket.length > 0){
                 const interval = setInterval(nextSlide, slideInterval)
                 return ()=>clearInterval(interval)
             }
         },[currentIndex])
-        console.log({"ll":getImageMarket})
     return (
         
         <div className="w-full">
@@ -35,14 +35,14 @@ export default function Account(){
                 <div 
                     className="flex transition-transform duration-700 relative bg-gray-200 w-full"
                 >
-                    {getImageMarket && getImageMarket?.picMarket.length > 0 ?(
+                    {getMarketsImage && getMarketsImage?.picMarket.length > 0 ?(
                     <div 
                         className="flex w-full transition-transform"
                         style={{
                             transform: `translateX(-${currentIndex * 100}%)`
                         }}
                     >
-                        {getImageMarket.picMarket.map((image:any, index:number)=>(
+                        {getMarketsImage.picMarket.map((image:any, index:number)=>(
                             <div className="min-w-full" key={index}>
                                 <img 
                                     alt="banner"
@@ -74,7 +74,7 @@ export default function Account(){
                     <div style={{width:'200px',height:'170px'}} className="relative rounded-full overflow-hidden border-4 border-white">
                         <Image 
                             alt="profile"
-                            src={getprofile.Photo ? `http://localhost:3001/${getprofile.Photo?.path}` : "/images/default-profile.jpg"}
+                            src={dataProfile.Photo ? `http://localhost:3001/${dataProfile.Photo?.path}` : "/images/default-profile.jpg"}
                             layout="fill"
                             objectFit="cover"
                         />
@@ -83,13 +83,13 @@ export default function Account(){
                         <div className="flex w-full">
                             <div className="w-full flex flex-row mx-7 gap-2">
                                 <span className="text-xl font-semibold">
-                                    <FontAwesomeIcon icon={faUser}/> &nbsp; {getprofile.Profile?.firstname}
+                                    <FontAwesomeIcon icon={faUser}/> &nbsp; {dataProfile.Profile?.firstname}
                                 </span>
                                 <span className="text-xl font-semibold mx-4">
-                                    {getprofile.Profile?.lastname}
+                                    {dataProfile.Profile?.lastname}
                                 </span>
                                 <span className="text-xl font-semibold ml-7">
-                                    <FontAwesomeIcon icon={faVenusMars} /> &nbsp; {getprofile.Account ? getprofile.Account?.gender : "ยังไม่ระบุ"}
+                                    <FontAwesomeIcon icon={faVenusMars} /> &nbsp; {dataProfile.Account ? dataProfile.Account?.gender : "ยังไม่ระบุ"}
                                 </span>
                             </div>
                             <div className="flex flex-row mt-2">
@@ -104,7 +104,7 @@ export default function Account(){
                         <div className="flex w-full">
                             <div className="w-full flex flex-row mx-7">
                                 <span className="text-xl font-semibold">
-                                    <FontAwesomeIcon icon={faPhone} /> &nbsp; {getprofile.Profile?.phone}
+                                    <FontAwesomeIcon icon={faPhone} /> &nbsp; {dataProfile.Profile?.phone}
                                 </span>
                             </div>
                         </div>
@@ -112,11 +112,11 @@ export default function Account(){
                             <span className="text-xl font-semibold ml-7">
                                 <FontAwesomeIcon icon={faCakeCandles} />
                             </span>
-                            {getprofile.Account ? (
+                            {dataProfile.Account ? (
                               <>
-                                <span className="text-xl font-semibold ml-4 mr-2">{getprofile.Account?.day}</span>
-                                <span className="text-xl font-semibold mx-2">{ortherFunction.getMonth(getprofile.Account?.month)}</span>
-                                <span className="text-xl font-semibold mx-2">{getprofile.Account?.year}</span>
+                                <span className="text-xl font-semibold ml-4 mr-2">{dataProfile.Account?.day}</span>
+                                <span className="text-xl font-semibold mx-2">{ortherFunction.getMonth(dataProfile.Account?.month)}</span>
+                                <span className="text-xl font-semibold mx-2">{dataProfile.Account?.year}</span>
                                </>
                             ):<span className="text-xl font-semibold mx-4">ยังไม่ระบุ</span>}
                         </div>
@@ -147,7 +147,7 @@ export default function Account(){
                 </div>
 
             </div>
-            {modelEditAccount ? <EditAccount setModelEditAccount={setModelEditAccount} /> : null}
+            {modelEditAccount ? <EditAccount setModelEditAccount={setModelEditAccount} setDataProfile={setDataProfile} dataProfile={dataProfile}/> : null}
         </div>
     )
 }
