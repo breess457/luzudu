@@ -129,8 +129,8 @@ export const RenderImageDefault = ({...props})=>{
 }
 
 export default function MultipleImage({
-    count,formats,setPicMarket,picMarket,getPicMarket,fileMarket,
-    setFileMarket,getImageNameMarket,setGetImageNameMarket,dataImageMarket
+    count,formats,setPic,pic,getPicMarket,fileMarket,
+    setFileMarket,getImageName,setGetImageName,dataImageMarket
 }:any){
         const [ownerLicense, setOwnerLicense] = useState<File[]>([]);
         function uploadFiles(f:any) {
@@ -145,7 +145,7 @@ export default function MultipleImage({
         let files;
         if(type === "inputFile"){
             files = [...e.target.files];
-            setPicMarket([...picMarket,...e.target.files])
+            setPic([...pic,...e.target.files])
         }else{
             e.preventDefault()
             e.stopPropagation();
@@ -237,8 +237,11 @@ export default function MultipleImage({
             dragging
               ? "border border-[#2B92EC] bg-[#EDF2FF]"
               : "border-dashed border-[#e0e0e0]"
-          } flex items-center justify-center mx-auto text-center border-2 rounded-md mt-4 py-5`}
+          } flex items-center justify-center mx-auto text-center border-2 rounded-md mt-4 py-5 hover:bg-red-300`}
           ref={dropContainer}
+          onClick={() => {
+            fileRef.current.click();
+          }}
         >
           <div className="flex-1 flex flex-col">
             <div className="mx-auto text-gray-400 mb-2">
@@ -253,14 +256,7 @@ export default function MultipleImage({
                 ref={fileRef}
                 onChange={(e) => handleDrop(e, "inputFile")}
               />
-              <span
-                className="text-[#4070f4] cursor-pointer"
-                onClick={() => {
-                  fileRef.current.click();
-                }}
-              >
-                Click to upload
-              </span>{" "}
+              
               or drag and drop
             </div>
             <div className="text-[10px] font-normal text-gray-500">
@@ -270,14 +266,14 @@ export default function MultipleImage({
         </div>
         
         
-          <div className="mt-4 grid grid-cols-2 gap-y-4 gap-x-4">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-4">
             {fileMarket.length > 0 && (
               <RenderImageDefault 
                   getPicMarket={fileMarket} 
                   setFileMarkets={setFileMarket}
                   showImages={showImage}
-                  getImageNameMarkets={getImageNameMarket}
-                  setGetImageNameMarkets={setGetImageNameMarket}
+                  getImageNameMarkets={getImageName}
+                  setGetImageNameMarkets={setGetImageName}
               />
             )}
             {ownerLicense.length > 0 && (

@@ -93,13 +93,13 @@ export default function EditImageMarket({...prop}){
                          <MultipleImage
                             count={5 - fileMarket.length}
                             formats={["jpg", "jpeg", "png"]}
-                            setPicMarket={setPicMarket}
-                            picMarket={picMarket}
-                            getPicMarket={getMarketsImage.picMarket}
+                            setPic={setPicMarket}
+                            pic={picMarket}
+                            getPic={getMarketsImage.picMarket}
                             fileMarket={fileMarket} 
                             setFileMarket={setFileMarket}
-                            getImageNameMarket={getImageNameMarket} 
-                            setGetImageNameMarket={setGetImageNameMarket}
+                            getImageName={getImageNameMarket} 
+                            setGetImageName={setGetImageNameMarket}
                         />
                     </div>
                     <div className="w-full flex flex-col mt-4">

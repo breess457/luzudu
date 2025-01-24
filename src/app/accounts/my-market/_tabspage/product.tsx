@@ -21,10 +21,13 @@ export default function ProductPage({...props}){
                     >
                         <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4 text-white"/>
                     </button>
-                </div>
+                </div> 
             </form>
             <div className="w-auto flex mt-3">
-                <button className="ml-auto px-3 py-2 text-sm font-medium text-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300">เพิ่มสินค้า</button>
+                <a
+                    href="my-market/createorder"
+                    className="ml-auto px-3 py-2 text-sm font-medium text-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300"
+                >เพิ่มสินค้า</a>
             </div>
         </div>
     )
